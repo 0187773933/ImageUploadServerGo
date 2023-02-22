@@ -3,6 +3,7 @@ module github.com/0187773933/ImageUploadServerGo
 go 1.19
 
 require (
+	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b
 	github.com/gofiber/fiber/v2 v2.42.0
 	golang.org/x/crypto v0.6.0
 	golang.org/x/image v0.5.0

@@ -3,17 +3,8 @@ package routes
 import (
 	"fmt"
 	"io"
-	// "bytes"
-	"image"
-	_ "image/jpeg"
-	_ "image/png"
-	_ "image/gif"
-	_ "golang.org/x/image/bmp"
-	_ "golang.org/x/image/tiff"
-	_ "golang.org/x/image/webp"
-	_ "golang.org/x/image/vector"
-	// "github.com/ajstarks/svgo"
-
+	"bytes"
+	// "reflect"
 	filepath "path/filepath"
 	// "time"
 	// "strconv"
@@ -23,7 +14,7 @@ import (
 	// uuid "github.com/satori/go.uuid"
 	types "github.com/0187773933/ImageUploadServerGo/v1/types"
 	// bcrypt "golang.org/x/crypto/bcrypt"
-	// utils "github.com/0187773933/ImageUploadServerGo/v1/utils"
+	utils "github.com/0187773933/ImageUploadServerGo/v1/utils"
 	// encryption "github.com/0187773933/ImageUploadServerGo/v1/encryption"
 )
 
@@ -59,9 +50,17 @@ func UploadURL( context *fiber.Ctx ) ( error ) {
 	return context.SendString( "result image url goes here" )
 }
 
+// everyone is forced to carry the weight of the world because we don't even have a society , let alone a dynasty.
+// we could be sitting around eating fruit , listening to music , making art , and telling stories.
+// anything else is a bamboozle.
+// 500 million , take it or leave it.
+
+// func decode_image_data(  )
+
 func UploadImage( context *fiber.Ctx ) ( error ) {
 
-	// 1.) Get Bytes out of whatever the fuck a multipart/formfile is
+	// 1.) Unwrap *multipart.FileHeader ➡️ multipart.sectionReadCloser ➡️ *bytes.Buffer
+	// posted_file ➡️ posted_file_data ➡️ image_buffer
 	posted_file , posted_file_error := context.FormFile( "file" )
 	if posted_file_error != nil {
 		fmt.Println( posted_file_error );
@@ -71,23 +70,16 @@ func UploadImage( context *fiber.Ctx ) ( error ) {
 	posted_file_extension := filepath.Ext( posted_file_name )
 	posted_file_data , _ := posted_file.Open()
 	defer posted_file_data.Close()
-	posted_file_data_reader := io.Reader( posted_file_data )
-	fmt.Println( "recieved :" , posted_file_extension , posted_file_name , posted_file.Size )
+	image_buffer := new( bytes.Buffer )
+	io.Copy( image_buffer , posted_file_data )
+	fmt.Println( "received :" , posted_file_extension , posted_file_name , posted_file.Size )
 
 	// 2.) Try to Decode Image Bytes
-	image , image_format , image_decode_error := image.Decode( posted_file_data_reader )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return return_error( context , "no image data" )
-	}
-	fmt.Println( "verified image data , typed : " , image_format )
-    bounds := image.Bounds()
-    width := ( bounds.Max.X - bounds.Min.X )
-    height := ( bounds.Max.Y - bounds.Min.Y )
-    fmt.Println( "width ===" , width , "height ===" , height )
+	utils.DecodeImageBytes( posted_file_extension , image_buffer )
 
-    // 3.) Convert Everything to a PNG with a white background
-    // TODO
+
+	// 3.) Convert Everything to a PNG with a white background
+	// TODO
 
 
 	context.Set( "Content-Type" , "text/html" )
