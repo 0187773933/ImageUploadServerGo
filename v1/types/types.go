@@ -20,6 +20,7 @@ type ConfigFile struct {
 	ServerCookieSecretMessage string `json:"server_cookie_secret_message"`
 	AdminUsername string `json:"admin_username"`
 	AdminPassword string `json:"admin_password"`
+	StorageLocation string `json:"storage_location"`
 	TimeZone string `json:"time_zone"`
 	BoltDBPath string `json:"bolt_db_path"`
 	BoltDBEncryptionKey string `json:"bolt_db_encryption_key"`
