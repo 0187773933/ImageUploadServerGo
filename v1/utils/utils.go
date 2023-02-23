@@ -8,16 +8,20 @@ import (
 	"fmt"
 	"bytes"
 	"reflect"
-	"image"
+	// "image"
 	// "image/color"
 	// "strconv"
 	// jpeg "image/jpeg"
-	_ "image/png"
-	_ "image/gif"
-	_ "golang.org/x/image/bmp"
-	_ "golang.org/x/image/tiff"
-	_ "golang.org/x/image/webp"
-	_ "golang.org/x/image/vector"
+	// _ "image/png"
+	// _ "image/gif"
+	// _ "golang.org/x/image/bmp"
+	// _ "golang.org/x/image/tiff"
+	// _ "golang.org/x/image/webp"
+	// _ "golang.org/x/image/vector"
+
+	// https://github.com/gographics/imagick
+	imagick "github.com/gographics/imagick/imagick"
+	// "github.com/disintegration/imaging"
 
 	// index_sort "github.com/mkmik/argsort"
 	"sort"
@@ -118,114 +122,141 @@ func GenerateNewKeys() {
 	fmt.Printf( "\tAdmin Password === %s\n\n" , admin_password )
 }
 
-func DecodeJPEG( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodeJPEG( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
-func DecodePNG( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodePNG( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
-func DecodeGIF( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodeGIF( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
-func DecodeSVG( image_buffer *bytes.Buffer ) {
-	fmt.Println( "not implemented , just call some binary that already has this solved" )
-}
+// func DecodeSVG( image_buffer *bytes.Buffer ) {
+// 	fmt.Println( "not implemented , just call some binary that already has this solved" )
+// }
 
-func DecodeTIFF( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodeTIFF( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
-func DecodeBMB( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodeBMB( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
-func DecodeWEBP( image_buffer *bytes.Buffer ) {
-	image , image_format , image_decode_error := image.Decode( image_buffer )
-	if image_decode_error != nil {
-		fmt.Println( image_decode_error );
-		return
-	}
-	fmt.Println( reflect.TypeOf( image ) )
-	fmt.Println( "verified image data , typed : " , image_format )
-	bounds := image.Bounds()
-	width := ( bounds.Max.X - bounds.Min.X )
-	height := ( bounds.Max.Y - bounds.Min.Y )
-	fmt.Println( "width ===" , width , "height ===" , height )
-}
+// func DecodeWEBP( image_buffer *bytes.Buffer ) {
+// 	image , image_format , image_decode_error := image.Decode( image_buffer )
+// 	if image_decode_error != nil {
+// 		fmt.Println( image_decode_error );
+// 		return
+// 	}
+// 	fmt.Println( reflect.TypeOf( image ) )
+// 	fmt.Println( "verified image data , typed : " , image_format )
+// 	bounds := image.Bounds()
+// 	width := ( bounds.Max.X - bounds.Min.X )
+// 	height := ( bounds.Max.Y - bounds.Min.Y )
+// 	fmt.Println( "width ===" , width , "height ===" , height )
+// }
 
 // eventually this returns something ???
 // or just eventually takes a path to write to ?
 func DecodeImageBytes( believed_type string  , image_buffer *bytes.Buffer ) {
-	believed_type = strings.ToLower( believed_type )
-	switch believed_type {
-		case ".jpg" , ".jpeg":
-			DecodeJPEG( image_buffer )
-		case ".png":
-			DecodePNG( image_buffer )
-		case ".gif":
-			DecodeGIF( image_buffer )
-		case ".svg":
-			DecodeSVG( image_buffer )
-		case ".tiff":
-			DecodeTIFF( image_buffer )
-		case ".bmb":
-			DecodeBMB( image_buffer )
-		case ".webp":
-			DecodeWEBP( image_buffer )
-		default:
-			fmt.Println( "Unsupported image format ===" , believed_type )
+
+	// brew install imagemagick
+	// export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+	// export CGO_CFLAGS_ALLOW='-Xpreprocessor'
+	// pkg-config --cflags --libs MagickWand
+	imagick.Initialize()
+	defer imagick.Terminate()
+
+	mw := imagick.NewMagickWand()
+	defer mw.Destroy()
+
+	err := mw.ReadImageBlob( image_buffer.Bytes() )
+	if err != nil {
+		fmt.Println("Failed to read image:", err)
+		return
 	}
+
+	fmt.Println( mw )
+	fmt.Println( reflect.TypeOf( mw ) )
+
+	// src , err := imaging.Decode( image_buffer )
+	// if err != nil {
+	// 	fmt.Println("Failed to decode image:", err)
+	// 	return
+	// }
+	// fmt.Println( src )
+	// fmt.Println( reflect.TypeOf( src ) )
+	// believed_type = strings.ToLower( believed_type )
+	// switch believed_type {
+	// 	case ".jpg" , ".jpeg":
+	// 		DecodeJPEG( image_buffer )
+	// 	case ".png":
+	// 		DecodePNG( image_buffer )
+	// 	case ".gif":
+	// 		DecodeGIF( image_buffer )
+	// 	case ".svg":
+	// 		DecodeSVG( image_buffer )
+	// 	case ".tiff":
+	// 		DecodeTIFF( image_buffer )
+	// 	case ".bmb":
+	// 		DecodeBMB( image_buffer )
+	// 	case ".webp":
+	// 		DecodeWEBP( image_buffer )
+	// 	default:
+	// 		fmt.Println( "Unsupported image format ===" , believed_type )
+	// }
 }
