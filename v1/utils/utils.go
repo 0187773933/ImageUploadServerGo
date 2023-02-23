@@ -131,19 +131,6 @@ func GetNextFileSuffix() ( result string ) {
 }
 
 
-// linux
-// sudo apt-get install libmagickwand-dev
-// go get gopkg.in/gographics/imagick.v3/imagick
-// sudo nano /etc/environment
-// PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
-// source /etc/environment
-
-// mac osx
-// brew install imagemagick
-// go get gopkg.in/gographics/imagick.v3/imagick
-// export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-// export CGO_CFLAGS_ALLOW='-Xpreprocessor'
-// pkg-config --cflags --libs MagickWand
 func WriteImageBytes( output_path string  , image_buffer *bytes.Buffer ) ( result bool ) {
 
 	result = false
