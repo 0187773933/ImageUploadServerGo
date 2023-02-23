@@ -214,7 +214,16 @@ func GenerateNewKeys() {
 // or just eventually takes a path to write to ?
 func DecodeImageBytes( believed_type string  , image_buffer *bytes.Buffer ) {
 
+	// linux
+	// sudo apt-get install libmagickwand-dev
+	// go get gopkg.in/gographics/imagick.v3/imagick
+	// sudo nano /etc/environment
+	// PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+	// source /etc/environment
+
+	// mac osx
 	// brew install imagemagick
+	// go get gopkg.in/gographics/imagick.v3/imagick
 	// export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 	// export CGO_CFLAGS_ALLOW='-Xpreprocessor'
 	// pkg-config --cflags --libs MagickWand
@@ -232,6 +241,28 @@ func DecodeImageBytes( believed_type string  , image_buffer *bytes.Buffer ) {
 
 	fmt.Println( mw )
 	fmt.Println( reflect.TypeOf( mw ) )
+
+	// Set the output format to JPEG.
+	err = mw.SetFormat("jpeg")
+	if err != nil {
+		fmt.Println("Failed to set format:", err)
+		return
+	}
+
+	// Set JPEG compression quality.
+	err = mw.SetImageCompressionQuality(100)
+	if err != nil {
+		fmt.Println("Failed to set quality:", err)
+		return
+	}
+
+	output := mw.GetImageBlob()
+	err = ioutil.WriteFile("output.jpg", output, 0644)
+	if err != nil {
+		fmt.Println("Failed to write image file:", err)
+		return
+	}
+
 
 	// src , err := imaging.Decode( image_buffer )
 	// if err != nil {
