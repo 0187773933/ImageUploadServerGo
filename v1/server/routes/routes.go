@@ -60,7 +60,6 @@ func Home( context *fiber.Ctx ) ( error ) {
 const stream_threshold = int64( 10 * 1024 * 1024 ) // 10 megabytes
 func ServeImage( context *fiber.Ctx ) ( error ) {
 	image_path := context.Params( "imagepath" )
-	fmt.Println( "Hello ???" , image_path )
 	file_path := fmt.Sprintf( "%s/%s" , GlobalConfig.StorageLocation , image_path )
 	file , file_open_error := os.Open( file_path )
 	if file_open_error != nil {
@@ -75,10 +74,14 @@ func ServeImage( context *fiber.Ctx ) ( error ) {
 		return return_error( context , "file info error" )
 	}
 	file_size := file_info.Size()
+	// fmt.Println( file_size )
 
 	context.Type( "jpeg" )
 	if file_size > stream_threshold {
-		return context.SendStream( file )
+		// fmt.Println( "large file , sending stream" )
+		// TODO : so like send this off to some other route handler , which can then be whitelisted in the rate-limiter ??
+		// return context.SendStream( file )
+		return context.SendFile( file_path )
 	} else {
 		return context.SendFile( file_path )
 	}

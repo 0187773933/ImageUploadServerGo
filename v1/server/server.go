@@ -28,7 +28,9 @@ func request_logging_middleware( context *fiber.Ctx ) ( error ) {
 
 func New( config types.ConfigFile ) ( server Server ) {
 
-	server.FiberApp = fiber.New()
+	server.FiberApp = fiber.New(fiber.Config{
+		BodyLimit: ( 50 * 1024 * 1024 ) , // 50 megabytes
+	})
 	server.Config = config
 
 	ip_addresses := utils.GetLocalIPAddresses()
