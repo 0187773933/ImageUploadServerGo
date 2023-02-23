@@ -13,6 +13,7 @@ import (
 	// "strconv"
 	// json "encoding/json"
 	// net_url "net/url"
+	bcrypt "golang.org/x/crypto/bcrypt"
 	try "github.com/manucorporat/try"
 	fiber "github.com/gofiber/fiber/v2"
 	// uuid "github.com/satori/go.uuid"
@@ -32,14 +33,19 @@ func RegisterRoutes( fiber_app *fiber.App , config *types.ConfigFile ) {
 	fiber_app.Post( "/upload/image" , UploadImage )
 }
 
-func validate_api_key( context *fiber.Ctx ) ( result bool ) {
-	result = false
-	return
-}
-
 func return_error( context *fiber.Ctx , error_message string ) ( error ) {
 	context.Set( "Content-Type" , "text/html" )
 	return context.SendString( error_message )
+}
+
+func validate_api_key( context *fiber.Ctx ) ( result bool ) {
+	result = false
+	posted_key := context.Get( "key" )
+	if posted_key == "" { return }
+	key_matches := bcrypt.CompareHashAndPassword( []byte( posted_key ) , []byte( GlobalConfig.ServerAPIKey ) )
+	if key_matches != nil { return }
+	result = true
+	return
 }
 
 func Home( context *fiber.Ctx ) ( error ) {
@@ -91,17 +97,15 @@ func ServeImage( context *fiber.Ctx ) ( error ) {
 }
 
 func UploadURL( context *fiber.Ctx ) ( error ) {
-	posted_key := context.Get( "key" )
-	posted_url := context.Get( "url" )
-	fmt.Println( posted_key )
-	fmt.Println( posted_url )
+
+	if validate_api_key( context ) == false { return return_error( context , "invalid key" ) }
 
 	// 1.) Download Remote URL into *bytes.Buffer
 	downloaded := false
 	var image_buffer bytes.Buffer
 	try.This( func() {
 		client := http.Client{}
-		response , response_error := client.Get( posted_url )
+		response , response_error := client.Get( context.Get( "url" ) )
 		defer response.Body.Close()
 		if response_error != nil { return }
 		response_body , response_body_read_error := ioutil.ReadAll( response.Body )
@@ -136,6 +140,8 @@ func UploadURL( context *fiber.Ctx ) ( error ) {
 // anything else is a bamboozle.
 // 500 million , take it or leave it.
 func UploadImage( context *fiber.Ctx ) ( error ) {
+
+	if validate_api_key( context ) == false { return return_error( context , "invalid key" ) }
 
 	// 1.) Unwrap *multipart.FileHeader ➡️ multipart.sectionReadCloser ➡️ *bytes.Buffer
 	// posted_file ➡️ posted_file_data ➡️ image_buffer
