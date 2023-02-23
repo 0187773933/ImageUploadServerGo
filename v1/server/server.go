@@ -6,6 +6,7 @@ import (
 	fiber "github.com/gofiber/fiber/v2"
 	fiber_cookie "github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	rate_limiter "github.com/gofiber/fiber/v2/middleware/limiter"
+	favicon "github.com/gofiber/fiber/v2/middleware/favicon"
 	// try "github.com/manucorporat/try"
 	types "github.com/0187773933/ImageUploadServerGo/v1/types"
 	utils "github.com/0187773933/ImageUploadServerGo/v1/utils"
@@ -34,15 +35,14 @@ func New( config types.ConfigFile ) ( server Server ) {
 	fmt.Println( "Server's IP Addresses === " , ip_addresses )
 	// https://docs.gofiber.io/api/middleware/limiter
 	server.FiberApp.Use( request_logging_middleware )
-	// server.FiberApp.Get( "/favicon.ico" , func( context *fiber.Ctx ) ( error ) { return context.SendFile( "./v1/server/cdn/favicon.ico" ) } )
+	server.FiberApp.Use( favicon.New() )
 	server.FiberApp.Use( rate_limiter.New( rate_limiter.Config{
 		Max: 4 ,
 		Expiration: ( 4 * time.Second ) ,
-		// Next: func( c *fiber.Ctx ) bool {
-		// 	ip := c.IP()
-		// 	fmt.Println( ip )
-		// 	return ip == "127.0.0.1"
-		// } ,
+		Next: func( c *fiber.Ctx ) ( bool ) {
+			// TODO : somehow allow large files using SendStream
+			return c.IP() == "127.0.0.1"
+		} ,
 		LimiterMiddleware: rate_limiter.SlidingWindow{} ,
 		KeyGenerator: func( c *fiber.Ctx ) string {
 			return c.Get( "x-forwarded-for" )
@@ -56,17 +56,11 @@ func New( config types.ConfigFile ) ( server Server ) {
 		// Storage: myCustomStorage{}
 		// monkaS
 		// https://github.com/gofiber/fiber/blob/master/middleware/limiter/config.go#L53
+		// https://github.com/gofiber/fiber/issues/255
 	}))
-	// temp_key := fiber_cookie.GenerateKey()
-	// fmt.Println( temp_key )
 	server.FiberApp.Use( fiber_cookie.New( fiber_cookie.Config{
 		Key: server.Config.ServerCookieSecret ,
-		// Key: temp_key ,
 	}))
-	// server.FiberApp.Static( "/cdn" , "./v1/server/cdn" )
-	// just white-list static stuff
-	// server.FiberApp.Get( "/" , func( context *fiber.Ctx ) ( error ) { return context.SendFile( "./v1/server/html/home.html" ) } )
-	// server.FiberApp.Get( "/logo.png" , func( context *fiber.Ctx ) ( error ) { return context.SendFile( "./v1/server/cdn/logo.png" ) } )
 	server.SetupRoutes()
 	return
 }

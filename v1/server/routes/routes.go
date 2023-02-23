@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"io"
+	"os"
 	"bytes"
 	// "reflect"
 	filepath "path/filepath"
@@ -23,6 +24,7 @@ var GlobalConfig *types.ConfigFile
 func RegisterRoutes( fiber_app *fiber.App , config *types.ConfigFile ) {
 	GlobalConfig = config
 	fiber_app.Get( "/" , Home )
+	fiber_app.Get( "/:imagepath" , ServeImage )
 	fiber_app.Post( "/upload/url" , UploadURL )
 	fiber_app.Post( "/upload/image" , UploadImage )
 }
@@ -45,6 +47,43 @@ func Home( context *fiber.Ctx ) ( error ) {
 	})
 }
 
+// TODO : Serve a "1 hot" image that has a key
+// func ServeOneHotImage( context *fiber.Ctx ) ( error ) {
+// }
+
+// func UploadURLOneHot( context *fiber.Ctx ) ( error ) {
+// }
+
+// func UploadImageOneHot( context *fiber.Ctx ) ( error ) {
+// }
+
+const stream_threshold = int64( 10 * 1024 * 1024 ) // 10 megabytes
+func ServeImage( context *fiber.Ctx ) ( error ) {
+	image_path := context.Params( "imagepath" )
+	fmt.Println( "Hello ???" , image_path )
+	file_path := fmt.Sprintf( "%s/%s" , GlobalConfig.StorageLocation , image_path )
+	file , file_open_error := os.Open( file_path )
+	if file_open_error != nil {
+		fmt.Println( file_open_error )
+		return return_error( context , "file open error" )
+	}
+	defer file.Close()
+
+	file_info , file_info_error := file.Stat()
+	if file_open_error != nil {
+		fmt.Println( file_info_error )
+		return return_error( context , "file info error" )
+	}
+	file_size := file_info.Size()
+
+	context.Type( "jpeg" )
+	if file_size > stream_threshold {
+		return context.SendStream( file )
+	} else {
+		return context.SendFile( file_path )
+	}
+}
+
 func UploadURL( context *fiber.Ctx ) ( error ) {
 	context.Set( "Content-Type" , "text/html" )
 	return context.SendString( "result image url goes here" )
@@ -54,7 +93,6 @@ func UploadURL( context *fiber.Ctx ) ( error ) {
 // we could be sitting around eating fruit , listening to music , making art , and telling stories.
 // anything else is a bamboozle.
 // 500 million , take it or leave it.
-
 func UploadImage( context *fiber.Ctx ) ( error ) {
 
 	// 1.) Unwrap *multipart.FileHeader ➡️ multipart.sectionReadCloser ➡️ *bytes.Buffer
@@ -73,17 +111,17 @@ func UploadImage( context *fiber.Ctx ) ( error ) {
 	fmt.Println( "received :" , posted_file_extension , posted_file_name , posted_file.Size )
 
 	// 2.) Get Next File Name
-	file_name := utils.GetNextFileName( GlobalConfig.StorageLocation )
+	file_suffix := utils.GetNextFileSuffix()
+	file_name := fmt.Sprintf( "%s/%s" , GlobalConfig.StorageLocation , file_suffix )
 	fmt.Println( file_name )
 
-	// 3.) Try to Decode Image Bytes
+	// 3.) Write Image Bytes to File
 	utils.WriteImageBytes( file_name , image_buffer )
 
-
-	// 3.) Convert Everything to a PNG with a white background
-	// TODO
-
-
+	// 4.) Serve "Live" URL
+	live_url := fmt.Sprintf( "%s/%s" , GlobalConfig.ServerBaseUrl , file_suffix )
+	fmt.Println( live_url + "\n" )
 	context.Set( "Content-Type" , "text/html" )
-	return context.SendString( "result image url goes here" )
+	return context.SendString( live_url )
 }
+

@@ -123,10 +123,10 @@ func GenerateNewKeys() {
 	fmt.Printf( "\tAdmin Password === %s\n\n" , admin_password )
 }
 
-func GetNextFileName( base_path string ) ( result string ) {
+func GetNextFileSuffix() ( result string ) {
 	time_stamp := ( time.Now().UnixNano() / int64( time.Millisecond ) )
 	random_suffix := rand.Intn( 1e9 )
-	result = fmt.Sprintf( "%s/%d-%d.jpeg" , base_path , time_stamp , random_suffix )
+	result = fmt.Sprintf( "%d-%d.jpeg" , time_stamp , random_suffix )
 	return
 }
 
