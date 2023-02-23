@@ -14,20 +14,18 @@ type RedisConfig struct {
 type ConfigFile struct {
 	ServerBaseUrl string `json:"server_base_url"`
 	ServerPort string `json:"server_port"`
+	TimeZone string `json:"time_zone"`
 	ServerAPIKey string `json:"server_api_key"`
 	ServerCookieSecret string `json:"server_cookie_secret"`
 	ServerCookieAdminSecretMessage string `json:"server_cookie_admin_secret_message"`
 	ServerCookieSecretMessage string `json:"server_cookie_secret_message"`
 	AdminUsername string `json:"admin_username"`
 	AdminPassword string `json:"admin_password"`
+	SecretBoxKey string `json:"secret_box_key"`
 	StorageLocation string `json:"storage_location"`
-	TimeZone string `json:"time_zone"`
-	BoltDBPath string `json:"bolt_db_path"`
-	BoltDBEncryptionKey string `json:"bolt_db_encryption_key"`
-	CheckInCoolOffDays int `json:"check_in_cooloff_days"`
+	StorageOneHotLocation string `json:"storage_one_hot_location"`
 	Redis RedisConfig "json:redis"
 	IPBlacklist []string "json:ip_blacklist"
-	IPInfoToken string `json:"ip_info_token"`
 }
 
 type AListResponse struct {
