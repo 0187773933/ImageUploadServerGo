@@ -5,12 +5,15 @@ import (
 	"io"
 	"os"
 	"bytes"
+	"io/ioutil"
+	"net/http"
 	// "reflect"
 	filepath "path/filepath"
 	// "time"
 	// "strconv"
 	// json "encoding/json"
 	// net_url "net/url"
+	try "github.com/manucorporat/try"
 	fiber "github.com/gofiber/fiber/v2"
 	// uuid "github.com/satori/go.uuid"
 	types "github.com/0187773933/ImageUploadServerGo/v1/types"
@@ -88,8 +91,44 @@ func ServeImage( context *fiber.Ctx ) ( error ) {
 }
 
 func UploadURL( context *fiber.Ctx ) ( error ) {
+	posted_key := context.Get( "key" )
+	posted_url := context.Get( "url" )
+	fmt.Println( posted_key )
+	fmt.Println( posted_url )
+
+	// 1.) Download Remote URL into *bytes.Buffer
+	downloaded := false
+	var image_buffer bytes.Buffer
+	try.This( func() {
+		client := http.Client{}
+		response , response_error := client.Get( posted_url )
+		defer response.Body.Close()
+		if response_error != nil { return }
+		response_body , response_body_read_error := ioutil.ReadAll( response.Body )
+		if response_body_read_error != nil { return }
+		_ , image_buffer_write_error := image_buffer.Write( response_body )
+		if image_buffer_write_error != nil { return }
+		downloaded = true
+	}).Catch( func( e try.E ) {
+		fmt.Println( e )
+	})
+	if downloaded == false {
+		return return_error( context , "failed to download remote file" )
+	}
+
+	// 2.) Get Next File Name
+	file_suffix := utils.GetNextFileSuffix()
+	file_name := fmt.Sprintf( "%s/%s" , GlobalConfig.StorageLocation , file_suffix )
+	fmt.Println( file_name )
+
+	// 3.) Write Image Bytes to File
+	utils.WriteImageBytes( file_name , &image_buffer )
+
+	// 4.) Serve "Live" URL
+	live_url := fmt.Sprintf( "%s/%s" , GlobalConfig.ServerBaseUrl , file_suffix )
+	fmt.Println( live_url + "\n" )
 	context.Set( "Content-Type" , "text/html" )
-	return context.SendString( "result image url goes here" )
+	return context.SendString( live_url )
 }
 
 // everyone is forced to carry the weight of the world because we don't even have a society , let alone a dynasty.

@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gographics/imagick v3.2.0+incompatible
+	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52
 	golang.org/x/crypto v0.6.0
 )
 
