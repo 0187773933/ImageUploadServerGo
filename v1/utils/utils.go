@@ -7,7 +7,8 @@ import (
 	"net"
 	"fmt"
 	"bytes"
-	"reflect"
+	// "reflect"
+	"math/rand"
 	// "image"
 	// "image/color"
 	// "strconv"
@@ -122,39 +123,41 @@ func GenerateNewKeys() {
 	fmt.Printf( "\tAdmin Password === %s\n\n" , admin_password )
 }
 
-// func has_transparent_background(  )
+func GetNextFileName( base_path string ) ( result string ) {
+	time_stamp := ( time.Now().UnixNano() / int64( time.Millisecond ) )
+	random_suffix := rand.Intn( 1e9 )
+	result = fmt.Sprintf( "%s/%d-%d.jpeg" , base_path , time_stamp , random_suffix )
+	return
+}
 
-// eventually this returns something ???
-// or just eventually takes a path to write to ?
-func DecodeImageBytes( believed_type string  , image_buffer *bytes.Buffer ) {
 
-	// linux
-	// sudo apt-get install libmagickwand-dev
-	// go get gopkg.in/gographics/imagick.v3/imagick
-	// sudo nano /etc/environment
-	// PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
-	// source /etc/environment
+// linux
+// sudo apt-get install libmagickwand-dev
+// go get gopkg.in/gographics/imagick.v3/imagick
+// sudo nano /etc/environment
+// PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+// source /etc/environment
 
-	// mac osx
-	// brew install imagemagick
-	// go get gopkg.in/gographics/imagick.v3/imagick
-	// export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-	// export CGO_CFLAGS_ALLOW='-Xpreprocessor'
-	// pkg-config --cflags --libs MagickWand
+// mac osx
+// brew install imagemagick
+// go get gopkg.in/gographics/imagick.v3/imagick
+// export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+// export CGO_CFLAGS_ALLOW='-Xpreprocessor'
+// pkg-config --cflags --libs MagickWand
+func WriteImageBytes( output_path string  , image_buffer *bytes.Buffer ) ( result bool ) {
+
+	result = false
+
 	imagick.Initialize()
 	defer imagick.Terminate()
-
 	mw := imagick.NewMagickWand()
 	defer mw.Destroy()
 
-	err := mw.ReadImageBlob( image_buffer.Bytes() )
-	if err != nil {
-		fmt.Println("Failed to read image:", err)
+	read_error := mw.ReadImageBlob( image_buffer.Bytes() )
+	if read_error != nil {
+		fmt.Println( "Failed to read image:" , read_error )
 		return
 	}
-
-	fmt.Println( mw )
-	fmt.Println( reflect.TypeOf( mw ) )
 
 	// Fix Transparent PNGs
 	has_alpha_channel := mw.GetImageAlphaChannel()
@@ -168,24 +171,26 @@ func DecodeImageBytes( believed_type string  , image_buffer *bytes.Buffer ) {
 	}
 
 	// Set the output format to JPEG.
-	err = mw.SetFormat("jpeg")
-	if err != nil {
-		fmt.Println("Failed to set format:", err)
+	jpeg_encoding_error := mw.SetFormat( "jpeg" )
+	if jpeg_encoding_error != nil {
+		fmt.Println("Failed to set format:", jpeg_encoding_error )
 		return
 	}
 
 	// Set JPEG compression quality.
-	err = mw.SetImageCompressionQuality(100)
-	if err != nil {
-		fmt.Println("Failed to set quality:", err)
+	jpeg_compression_error := mw.SetImageCompressionQuality( 100 )
+	if jpeg_compression_error != nil {
+		fmt.Println( "Failed to set quality:" , jpeg_compression_error )
 		return
 	}
 
 	output := mw.GetImageBlob()
-	err = ioutil.WriteFile("output.jpeg", output, 0644)
-	if err != nil {
-		fmt.Println("Failed to write image file:", err)
+	jpeg_write_error := ioutil.WriteFile( output_path , output , 0644 )
+	if jpeg_write_error != nil {
+		fmt.Println( "Failed to write image file:" , jpeg_write_error )
 		return
 	}
 
+	result = true
+	return
 }

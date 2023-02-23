@@ -55,8 +55,6 @@ func UploadURL( context *fiber.Ctx ) ( error ) {
 // anything else is a bamboozle.
 // 500 million , take it or leave it.
 
-// func decode_image_data(  )
-
 func UploadImage( context *fiber.Ctx ) ( error ) {
 
 	// 1.) Unwrap *multipart.FileHeader ➡️ multipart.sectionReadCloser ➡️ *bytes.Buffer
@@ -74,8 +72,12 @@ func UploadImage( context *fiber.Ctx ) ( error ) {
 	io.Copy( image_buffer , posted_file_data )
 	fmt.Println( "received :" , posted_file_extension , posted_file_name , posted_file.Size )
 
-	// 2.) Try to Decode Image Bytes
-	utils.DecodeImageBytes( posted_file_extension , image_buffer )
+	// 2.) Get Next File Name
+	file_name := utils.GetNextFileName( GlobalConfig.StorageLocation )
+	fmt.Println( file_name )
+
+	// 3.) Try to Decode Image Bytes
+	utils.WriteImageBytes( file_name , image_buffer )
 
 
 	// 3.) Convert Everything to a PNG with a white background
