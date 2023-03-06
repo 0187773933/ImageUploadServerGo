@@ -21,7 +21,8 @@ import (
 	// _ "golang.org/x/image/vector"
 
 	// https://github.com/gographics/imagick
-	imagick "github.com/gographics/imagick/imagick"
+	// imagick "github.com/gographics/imagick/imagick"
+	imagick "gopkg.in/gographics/imagick.v2/imagick"
 	// "github.com/disintegration/imaging"
 
 	// index_sort "github.com/mkmik/argsort"
