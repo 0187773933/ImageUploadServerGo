@@ -27,8 +27,8 @@ func request_logging_middleware( context *fiber.Ctx ) ( error ) {
 
 func New( config types.ConfigFile ) ( server Server ) {
 
-	server.FiberApp = fiber.New(fiber.Config{
-		BodyLimit: ( 50 * 1024 * 1024 ) , // 50 megabytes
+	server.FiberApp = fiber.New( fiber.Config{
+		BodyLimit: ( 100 * 1024 * 1024 ) , // 50 megabytes
 	})
 	server.Config = config
 
@@ -38,8 +38,8 @@ func New( config types.ConfigFile ) ( server Server ) {
 	server.FiberApp.Use( request_logging_middleware )
 	server.FiberApp.Use( favicon.New() )
 	server.FiberApp.Use( rate_limiter.New( rate_limiter.Config{
-		Max: 4 ,
-		Expiration: ( 4 * time.Second ) ,
+		Max: config.RateLimitPerSecond ,
+		Expiration: ( 1 * time.Second ) ,
 		Next: func( c *fiber.Ctx ) ( bool ) {
 			// TODO : somehow allow large files using SendStream
 			return c.IP() == "127.0.0.1"
