@@ -26,7 +26,7 @@ type ConfigFile struct {
 	StorageOneHotLocation string `json:"storage_one_hot_location"`
 	Redis RedisConfig "json:redis"
 	IPBlacklist []string "json:ip_blacklist"
-	RateLimitPerSecond []string "json:rate_limit_per_second"
+	RateLimitPerSecond int "json:rate_limit_per_second"
 }
 
 type AListResponse struct {
