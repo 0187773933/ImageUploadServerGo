@@ -11,9 +11,17 @@
 6. `pkg-config --cflags --libs MagickWand`
 
 ## ImageMagick OSX Install
+- https://github.com/gographics/imagick/issues/286
 
-1. `brew install imagemagick`
-2. `go get gopkg.in/gographics/imagick.v3/imagick`
+1. `brew install pkg-config imagemagick@6`
+2. `go get gopkg.in/gographics/imagick.2/imagick`
+3. go run main.go config.json
+
+## Old - ImageMagick OSX Install
+3. `echo $PKG_CONFIG_PATH`
+3. `find /usr/local/Cellar -name "ImageMagick*.pc"
+4. https://trac.macports.org/wiki/Migration
+4. `export PKG_CONFIG_PATH="/path/to/imagemagick/pkgconfig:$PKG_CONFIG_PATH"`
 3. `export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig`
 4. `export CGO_CFLAGS_ALLOW='-Xpreprocessor'`
 5. `pkg-config --cflags --libs MagickWand`

@@ -29,10 +29,13 @@ echo "Extracting To : /usr/local/go"
 # sudo ln -s /usr/lib/go/bin/go /usr/local/go
 # echo "PATH=$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
 # https://askubuntu.com/questions/217570/bc-set-number-of-digits-after-decimal-point
-export GO_TAR_KILOBYTES=$(printf "%.3f\n" $(echo "$(stat --format="%s" go.tar.gz) / 1000" | bc -l))
-echo $GO_TAR_KILOBYTES
+
+#export GO_TAR_KILOBYTES=$(printf "%.3f\n" $(echo "$(stat --format="%s" go.tar.gz) / 1000" | bc -l))
+#echo $GO_TAR_KILOBYTES
+
 # GO_TAR_KILOBYTES=$(printf "%.3f\n" $(echo "$(stat --format="%s" go.tar.gz) / 1000" | bc -l));
-# sudo tar --checkpoint=1 --checkpoint-action=exec='/bin/bash -c "cmd=$(echo 
-R09fVEFSX0tJTE9CWVRFUz0kKHByaW50ZiAiJS4zZlxuIiAkKGVjaG8gIiQoc3RhdCAtLWZvcm1hdD0iJXMiIC9ob21lL21vcnBocy9nby50YXIuZ3opIC8gMTAwMCIgfCBiYyAtbCkpOw== | base64 -d ; echo); eval $cmd; echo 
-[$TAR_CHECKPOINT] of $GO_TAR_KILOBYTES kilobytes"' -C /usr/local -xzf /home/$USERNAME/go.tar.gz
+# sudo tar --checkpoint=1 --checkpoint-action=exec='/bin/bash -c "cmd=$(echo
+
+#R09fVEFSX0tJTE9CWVRFUz0kKHByaW50ZiAiJS4zZlxuIiAkKGVjaG8gIiQoc3RhdCAtLWZvcm1hdD0iJXMiIC9ob21lL21vcnBocy9nby50YXIuZ3opIC8gMTAwMCIgfCBiYyAtbCkpOw== | base64 -d ; echo); eval $cmd; echo
+#[$TAR_CHECKPOINT] of $GO_TAR_KILOBYTES kilobytes"' -C /usr/local -xzf /home/$USERNAME/go.tar.gz
 mkdir -p ~/go

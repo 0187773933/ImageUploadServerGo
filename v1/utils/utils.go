@@ -2,12 +2,15 @@ package utils
 
 import (
 	"os"
+	"io"
+	"os/exec"
 	// "bufio"
 	"time"
 	"net"
 	"fmt"
 	"bytes"
 	// "reflect"
+	// "image/jpeg"
 	"math/rand"
 	// "image"
 	// "image/color"
@@ -19,6 +22,7 @@ import (
 	// _ "golang.org/x/image/tiff"
 	// _ "golang.org/x/image/webp"
 	// _ "golang.org/x/image/vector"
+
 
 	// https://github.com/gographics/imagick
 	// imagick "github.com/gographics/imagick/imagick"
@@ -34,6 +38,14 @@ import (
 	types "github.com/0187773933/ImageUploadServerGo/v1/types"
 	fiber_cookie "github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	encryption "github.com/0187773933/ImageUploadServerGo/v1/encryption"
+
+
+	// canvas "github.com/tdewolff/canvas"
+	// rasterizer "github.com/tdewolff/canvas/rasterizer"
+
+	// gg "github.com/fogleman/gg"
+	// oksvg "github.com/srwiley/oksvg"
+	// rasterx "github.com/srwiley/rasterx"
 )
 
 func ParseConfig( file_path string ) ( result types.ConfigFile ) {
@@ -146,6 +158,30 @@ func WriteImageBytes( output_path string  , image_buffer *bytes.Buffer ) ( resul
 		fmt.Println( "Failed to read image:" , read_error )
 		return
 	}
+
+	image_format := mw.GetImageFormat()
+	fmt.Printf( "Image Format === %s\n" , image_format )
+
+	// SVGs
+	if image_format == "SVG" {
+
+		temp_svg_file , _ := os.CreateTemp( "" , "image-*.svg" )
+		defer temp_svg_file.Close()
+		io.Copy( temp_svg_file , image_buffer )
+		temp_svg_file.Sync()
+		fmt.Println( temp_svg_file.Name() )
+		fmt.Println( output_path )
+		// cmd := exec.Command( "/Users/morpheous/WORKSPACE/GO/ImageUploadServer/svg.sh" , temp_svg_file.Name() , output_path )
+		cmd := exec.Command( "/home/morphs/ImageUploadServerGo/svg.sh" , temp_svg_file.Name() , output_path )
+		run_result := cmd.Run()
+		if run_result != nil {
+			fmt.Println( run_result )
+		}
+		os.Remove( temp_svg_file.Name() )
+		result = true
+		return
+	}
+	// svg, err := canvas.DecodeSVG(imageBuffer)
 
 	// Fix Transparent PNGs
 	has_alpha_channel := mw.GetImageAlphaChannel()

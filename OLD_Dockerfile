@@ -29,16 +29,9 @@ RUN mkdir -p /home/$USERNAME
 RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
 RUN usermod -aG sudo $USERNAME
 RUN echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-RUN mkdir /home/morphs/ImageUploadServerGo
-COPY . /home/morphs/ImageUploadServerGo
-RUN chown -R $USERNAME:$USERNAME /home/morphs/ImageUploadServerGo
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
-# Install Node , for puppeteer
-RUN sudo apt-get install nodejs npm -y
-RUN sudo apt-get install chromium -y
-RUN sudo npm install puppeteer -g
 
 # install go with specific version and progress
 COPY ./go_install.sh /home/$USERNAME/go_install.sh
@@ -53,9 +46,12 @@ RUN echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig" | tee -a /home/$USERNAME/.ba
 RUN echo "CGO_CFLAGS_ALLOW='-Xpreprocessor'" | tee -a /home/$USERNAME/.bashrc
 
 ARG GO_ARCH=amd64
+RUN git clone "https://github.com/0187773933/ImageUploadServerGo"
 WORKDIR ImageUploadServerGo
 RUN /usr/local/go/bin/go mod tidy
+# force image-magick-v2
 RUN /usr/local/go/bin/go get github.com/gographics/imagick@none
 RUN /usr/local/go/bin/go get gopkg.in/gographics/imagick.v2/imagick
 RUN PKG_CONFIG_PATH=/usr/local/lib/pkgconfig CGO_CFLAGS_ALLOW='-Xpreprocessor' GOOS=linux GOARCH=$GO_ARCH /usr/local/go/bin/go build -o /home/morphs/ImageUploadServer
+#ENTRYPOINT [ "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig CGO_CFLAGS_ALLOW='-Xpreprocessor' /home/morphs/ImageUploadServer" ]
 ENTRYPOINT [ "/home/morphs/ImageUploadServer" ]

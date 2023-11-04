@@ -257,6 +257,8 @@ func UploadImage( context *fiber.Ctx ) ( error ) {
 
 	if validate_api_key( context ) == false { return return_error( context , "invalid key" ) }
 
+	// fmt.Println( "???? - webp" )
+
 	// 1.) Unwrap *multipart.FileHeader ➡️ multipart.sectionReadCloser ➡️ *bytes.Buffer
 	// posted_file ➡️ posted_file_data ➡️ image_buffer
 	posted_file , posted_file_error := context.FormFile( "file" )
