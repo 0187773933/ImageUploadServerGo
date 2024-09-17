@@ -56,6 +56,6 @@ ARG GO_ARCH=amd64
 WORKDIR ImageUploadServerGo
 RUN /usr/local/go/bin/go mod tidy
 RUN /usr/local/go/bin/go get github.com/gographics/imagick@none
-RUN /usr/local/go/bin/go get gopkg.in/gographics/imagick.v2/imagick
+RUN /usr/local/go/bin/go get gopkg.in/gographics/imagick.v3/imagick
 RUN PKG_CONFIG_PATH=/usr/local/lib/pkgconfig CGO_CFLAGS_ALLOW='-Xpreprocessor' GOOS=linux GOARCH=$GO_ARCH /usr/local/go/bin/go build -o /home/morphs/ImageUploadServer
 ENTRYPOINT [ "/home/morphs/ImageUploadServer" ]
