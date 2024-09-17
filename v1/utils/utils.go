@@ -26,7 +26,7 @@ import (
 
 	// https://github.com/gographics/imagick
 	// imagick "github.com/gographics/imagick/imagick"
-	imagick "gopkg.in/gographics/imagick.v2/imagick"
+	imagick "gopkg.in/gographics/imagick.v3/imagick"
 	// "github.com/disintegration/imaging"
 
 	// index_sort "github.com/mkmik/argsort"
@@ -208,7 +208,11 @@ func WriteImageBytes( output_path string  , image_buffer *bytes.Buffer ) ( resul
 		return
 	}
 
-	output := mw.GetImageBlob()
+	output , blob_error := mw.GetImageBlob()
+	if blob_error != nil {
+		fmt.Println( "Failed to get image blob:" , blob_error )
+		return
+	}
 	jpeg_write_error := ioutil.WriteFile( output_path , output , 0644 )
 	if jpeg_write_error != nil {
 		fmt.Println( "Failed to write image file:" , jpeg_write_error )

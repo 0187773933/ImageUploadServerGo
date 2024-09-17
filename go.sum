@@ -86,3 +86,5 @@ gopkg.in/gographics/imagick.v2 v2.6.2 h1:8ILTJzDKQKSYSfav+9GZs9H8zOOR2UtZVTWkUdF
 gopkg.in/gographics/imagick.v2 v2.6.2/go.mod h1:/QVPLV/iKdNttRKthmDkeeGg+vdHurVEPc8zkU0XgBk=
 gopkg.in/gographics/imagick.v2 v2.6.3 h1:m1l5y3HMoYsXLRSDK3VQyK/xjPwClfH/0W7ZN73pTO4=
 gopkg.in/gographics/imagick.v2 v2.6.3/go.mod h1:/QVPLV/iKdNttRKthmDkeeGg+vdHurVEPc8zkU0XgBk=
+gopkg.in/gographics/imagick.v3 v3.7.0 h1:w8iQa58ikuqjX4l2OVML3pgqFcDMD8ywXJ9/cXa33fk=
+gopkg.in/gographics/imagick.v3 v3.7.0/go.mod h1:+Q9nyA2xRZXrDyTtJ/eko+8V/5E7bWYs08ndkZp8UmA=
