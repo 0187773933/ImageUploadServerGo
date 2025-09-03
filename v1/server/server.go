@@ -7,6 +7,7 @@ import (
 	fiber_cookie "github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	rate_limiter "github.com/gofiber/fiber/v2/middleware/limiter"
 	favicon "github.com/gofiber/fiber/v2/middleware/favicon"
+	cors "github.com/gofiber/fiber/v2/middleware/cors"
 	types "github.com/0187773933/ImageUploadServerGo/v1/types"
 	utils "github.com/0187773933/ImageUploadServerGo/v1/utils"
 	routes "github.com/0187773933/ImageUploadServerGo/v1/server/routes"
@@ -37,6 +38,10 @@ func New( config types.ConfigFile ) ( server Server ) {
 	// https://docs.gofiber.io/api/middleware/limiter
 	server.FiberApp.Use( request_logging_middleware )
 	server.FiberApp.Use( favicon.New() )
+    server.Use( cors.New( cors.Config{
+        AllowOrigins: "*",
+        AllowMethods: "GET,POST,HEAD,OPTIONS",
+    }))
 	server.Use(func(c *fiber.Ctx) error {
 		c.Set( "Cross-Origin-Resource-Policy" , "cross-origin" )
 		return c.Next()
