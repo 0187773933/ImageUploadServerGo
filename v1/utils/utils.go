@@ -48,6 +48,8 @@ import (
 	// rasterx "github.com/srwiley/rasterx"
 )
 
+// https://github.com/gographics/imagick/blob/v3.7.0/imagick/magick_wand_image.go#L940
+
 func ParseConfig( file_path string ) ( result types.ConfigFile ) {
 	file_data , _ := ioutil.ReadFile( file_path )
 	err := json.Unmarshal( file_data , &result )

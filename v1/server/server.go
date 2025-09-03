@@ -37,6 +37,10 @@ func New( config types.ConfigFile ) ( server Server ) {
 	// https://docs.gofiber.io/api/middleware/limiter
 	server.FiberApp.Use( request_logging_middleware )
 	server.FiberApp.Use( favicon.New() )
+	server.Use(func(c *fiber.Ctx) error {
+		c.Set( "Cross-Origin-Resource-Policy" , "cross-origin" )
+		return c.Next()
+	})
 	server.FiberApp.Use( rate_limiter.New( rate_limiter.Config{
 		Max: config.RateLimitPerSecond ,
 		Expiration: ( 1 * time.Second ) ,
